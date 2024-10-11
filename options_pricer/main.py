@@ -41,7 +41,7 @@ def main():
         
         styles = {
             "nav": {
-                "background-color": "rgb(123, 209, 146)",
+                "background-color": "rgb(235, 64, 52)",
             },
             "div": {
                 "max-width": "32rem",
@@ -1400,7 +1400,7 @@ def main():
         
         styles = {
             "nav": {
-                "background-color": "rgb(123, 209, 146)",
+                "background-color": "rgb(235, 64, 52)",
             },
             "div": {
                 "max-width": "32rem",
@@ -2229,13 +2229,13 @@ def main():
         
         styles = {
             "nav": {
-                "background-color": "rgb(123, 209, 146)",
+                "background-color": "rgb(235, 64, 52)",
             },
             "div": {
                 "max-width": "32rem",
             },
             "span": {
-                "border-radius": "0.5rem",
+                "border-radius": "0.7rem",
                 "color": "rgb(49, 51, 63)",
                 "margin": "0 0.125rem",
                 "padding": "0.4375rem 0.625rem",
