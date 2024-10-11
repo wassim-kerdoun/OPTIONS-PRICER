@@ -312,7 +312,7 @@ def main():
                     
                     st.markdown('---')
                     
-                    st.subheader('Volatility Surface')
+                    col1, col2 = st.columns(2)
                     
                     K_values, T_values, implied_vol_matrix = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r,
                                                 opc_call.q, opc_call.sigma, 
@@ -328,10 +328,109 @@ def main():
                             zaxis_title='Implied Volatility'
                         )
                     )
+                    
+                    with col1:
+                        st.subheader('Volatility Surface')
+                        st.plotly_chart(fig3)
+                    
+                    st.markdown('---')
+                    
+                    k_values, t_values, price_matrix = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r,
+                                                opc_call.q, opc_call.sigma, 
+                                                opc_call.option_type).price_surface()
+                    
+                    fig4 = go.Figure(data=[go.Surface(x=k_values / current_price, y=t_values, z=price_matrix,
+                                                    colorscale='Viridis', showscale=True)])
 
-                    st.plotly_chart(fig3)
+                    fig4.update_layout(
+                        scene=dict(
+                            xaxis_title='Moneyness (K/S)',
+                            yaxis_title='Time to Expiration (Years)',
+                            zaxis_title='Price'
+                        )
+                    )
+
+                    with col2:
+                        st.subheader('Price Surface')
+                        st.plotly_chart(fig4)
                     
+                    ks, ts, delta_matrix = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r,
+                                                opc_call.q, opc_call.sigma, 
+                                                opc_call.option_type).delta_surface()
                     
+                    fig5 = go.Figure(data=[go.Surface(x=ks / current_price, y=ts, z=delta_matrix,
+                                                    colorscale='Viridis', showscale=True)])
+
+                    fig5.update_layout(
+                        scene=dict(
+                            xaxis_title='Moneyness (K/S)',
+                            yaxis_title='Time to Expiration (Years)',
+                            zaxis_title='Delta'
+                        )
+                    )
+
+                    with col1:
+                        st.subheader('Delta Surface')
+                        st.plotly_chart(fig5)
+                        
+                    kk, tt, gamma_matrix = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r,
+                                                opc_call.q, opc_call.sigma, 
+                                                opc_call.option_type).gamma_surface()
+                    
+                    fig6 = go.Figure(data=[go.Surface(x=kk / current_price, y=tt, z=gamma_matrix,
+                                                    colorscale='Viridis', showscale=True)])
+
+                    fig6.update_layout(
+                        scene=dict(
+                            xaxis_title='Moneyness (K/S)',
+                            yaxis_title='Time to Expiration (Years)',
+                            zaxis_title='Gamma'
+                        )
+                    )
+
+                    with col2:
+                        st.subheader('Gamma Surface')
+                        st.plotly_chart(fig6)
+                        
+                    kk, tt, vega_matrix = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r,
+                                                opc_call.q, opc_call.sigma, 
+                                                opc_call.option_type).vega_surface()
+                    
+                    fig7 = go.Figure(data=[go.Surface(x=kk / current_price, y=tt, z=vega_matrix,
+                                                    colorscale='Viridis', showscale=True)])
+
+                    fig7.update_layout(
+                        scene=dict(
+                            xaxis_title='Moneyness (K/S)',
+                            yaxis_title='Time to Expiration (Years)',
+                            zaxis_title='Vega'
+                        )
+                    )
+
+                    with col1:
+                        st.subheader('Vega Surface')
+                        st.plotly_chart(fig7)
+                        
+                    kk, tt, theta_matrix = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r,
+                                                opc_call.q, opc_call.sigma, 
+                                                opc_call.option_type).theta_surface()
+                    
+                    fig8 = go.Figure(data=[go.Surface(x=kk / current_price, y=tt, z=theta_matrix,
+                                                    colorscale='Viridis', showscale=True)])
+
+                    fig8.update_layout(
+                        scene=dict(
+                            xaxis_title='Moneyness (K/S)',
+                            yaxis_title='Time to Expiration (Years)',
+                            zaxis_title='Theta'
+                        )
+                    )
+
+                    with col2:
+                        st.subheader('Theta Surface')
+                        st.plotly_chart(fig8)
+    
+           
             elif method_type == 'Merton Jump Diffusion':
                 
                 col1, col2 = st.columns(2)
@@ -542,62 +641,81 @@ def main():
                             st.write(f"Implied Volatility for Put Option: {put_newton_iv:.4f}")
                             
                             
-                    st.markdown('---')
+                    # st.markdown('---')
                     
-                    st.subheader("Volatility Smile")
+                    # st.subheader("Volatility Smile")
                     
-                    Ks, implied_vols = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r, 
-                                                opc_call.q, opc_call.sigma, 
-                                                opc_call.option_type).volatility_smile()
+                    # Ks, implied_vols = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r, 
+                    #                             opc_call.q, opc_call.sigma, 
+                    #                             opc_call.option_type).volatility_smile()
                     
-                    fig1 = go.Figure()
-                    fig1.add_trace(go.Scatter(x=Ks / current_price, y=implied_vols, mode='lines+markers', name='Implied Volatility'))
-                    fig1.update_layout(
-                        xaxis_title="Moneyness (K/S)",
-                        yaxis_title="Implied Volatility",
-                        xaxis=dict(showgrid=True),
-                        yaxis=dict(showgrid=True)
-                        )
-                    st.plotly_chart(fig1)
+                    # fig1 = go.Figure()
+                    # fig1.add_trace(go.Scatter(x=Ks / current_price, y=implied_vols, mode='lines+markers', name='Implied Volatility'))
+                    # fig1.update_layout(
+                    #     xaxis_title="Moneyness (K/S)",
+                    #     yaxis_title="Implied Volatility",
+                    #     xaxis=dict(showgrid=True),
+                    #     yaxis=dict(showgrid=True)
+                    #     )
+                    # st.plotly_chart(fig1)
                     
-                    st.markdown('---')
+                    # st.markdown('---')
                     
-                    st.subheader('Volatility Term Structure')
+                    # st.subheader('Volatility Term Structure')
                     
-                    T_values, implied_vols = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r,
-                                                opc_call.q, opc_call.sigma, 
-                                                opc_call.option_type).volatility_term_structure()
+                    # T_values, implied_vols = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r,
+                    #                             opc_call.q, opc_call.sigma, 
+                    #                             opc_call.option_type).volatility_term_structure()
                     
-                    fig2 = go.Figure()
-                    fig2.add_trace(go.Scatter(x=T_values, y=implied_vols, mode='lines+markers', name='Implied Volatility'))
-                    fig2.update_layout(
-                        xaxis_title="Time to Expiration (Years)",
-                        yaxis_title="Implied Volatility",
-                        xaxis=dict(showgrid=True),
-                        yaxis=dict(showgrid=True)
-                    )
-                    st.plotly_chart(fig2)
+                    # fig2 = go.Figure()
+                    # fig2.add_trace(go.Scatter(x=T_values, y=implied_vols, mode='lines+markers', name='Implied Volatility'))
+                    # fig2.update_layout(
+                    #     xaxis_title="Time to Expiration (Years)",
+                    #     yaxis_title="Implied Volatility",
+                    #     xaxis=dict(showgrid=True),
+                    #     yaxis=dict(showgrid=True)
+                    # )
+                    # st.plotly_chart(fig2)
                     
-                    st.markdown('---')
+                    # st.markdown('---')
                     
-                    st.subheader('Volatility Surface')
+                    # st.subheader('Volatility Surface')
                     
-                    K_values, T_values, implied_vol_matrix = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r,
-                                                opc_call.q, opc_call.sigma, 
-                                                opc_call.option_type).volatility_surface()
+                    # K_values, T_values, implied_vol_matrix = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r,
+                    #                             opc_call.q, opc_call.sigma, 
+                    #                             opc_call.option_type).volatility_surface()
                     
-                    fig3 = go.Figure(data=[go.Surface(x=K_values / current_price, y=T_values, z=implied_vol_matrix,
-                                                    colorscale='Viridis', showscale=True)])
+                    # fig3 = go.Figure(data=[go.Surface(x=K_values / current_price, y=T_values, z=implied_vol_matrix,
+                    #                                 colorscale='Viridis', showscale=True)])
 
-                    fig3.update_layout(
-                        scene=dict(
-                            xaxis_title='Moneyness (K/S)',
-                            yaxis_title='Time to Expiration (Years)',
-                            zaxis_title='Implied Volatility'
-                        )
-                    )
+                    # fig3.update_layout(
+                    #     scene=dict(
+                    #         xaxis_title='Moneyness (K/S)',
+                    #         yaxis_title='Time to Expiration (Years)',
+                    #         zaxis_title='Implied Volatility'
+                    #     )
+                    # )
 
-                    st.plotly_chart(fig3)
+                    # st.plotly_chart(fig3)
+                    
+                    # st.subheader('Price Surface')
+                    
+                    # k_values, t_values, price_matrix = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r,
+                    #                             opc_call.q, opc_call.sigma, 
+                    #                             opc_call.option_type).price_surface()
+                    
+                    # fig4 = go.Figure(data=[go.Surface(x=k_values / current_price, y=t_values, z=price_matrix,
+                    #                                 colorscale='Viridis', showscale=True)])
+
+                    # fig4.update_layout(
+                    #     scene=dict(
+                    #         xaxis_title='Moneyness (K/S)',
+                    #         yaxis_title='Time to Expiration (Years)',
+                    #         zaxis_title='Price'
+                    #     )
+                    # )
+
+                    # st.plotly_chart(fig4)
                 
                 
             elif method_type == 'Binomial Trees':
