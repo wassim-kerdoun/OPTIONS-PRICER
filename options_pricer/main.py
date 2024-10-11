@@ -2287,7 +2287,7 @@ def main():
                                 "10 years": "^TNX"    # 10-Year Treasury Note
                             }
 
-                            ticker = duration_map[duration_option]
+                            tickerr = duration_map[duration_option]
 
                             try:
                                 if duration_option == "2 years":
