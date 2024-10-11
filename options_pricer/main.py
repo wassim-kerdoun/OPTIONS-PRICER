@@ -2291,9 +2291,9 @@ def main():
 
                             try:
                                 if duration_option == "2 years":
-                                    data = yf.download(ticker, period="5d", interval="1d")
+                                    data = yf.download(tickerr, period="5d", interval="1d")
                                 else:
-                                    data = yf.download(ticker, period="1d", interval="1d")
+                                    data = yf.download(tickerr, period="1d", interval="1d")
                                 if data.empty:
                                     raise ValueError("No data returned for the selected duration.")
                                 risk_free_rate = data['Close'].iloc[-1] / 100
