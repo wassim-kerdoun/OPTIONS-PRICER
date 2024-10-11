@@ -156,8 +156,8 @@ class ImpliedVolatility:
         and computed implied volatility surface (implied_vol_matrix).
         """
         
-        K_values = np.linspace(self.K - self.K*0.05, self.K + self.K*0.05, 48)
-        T_values = np.linspace(1/12, 2.0, num=48)
+        K_values = np.linspace(self.K - self.K*0.20, self.K + self.K*0.20, 100)
+        T_values = np.linspace(1/12, 2.0, num=100)
         implied_vol_matrix = np.zeros((len(T_values), len(K_values)))
 
         for i, T in enumerate(T_values):
@@ -179,3 +179,63 @@ class ImpliedVolatility:
         # fig.show()
         
         return K_values, T_values, implied_vol_matrix
+    
+    def price_surface(self):
+        
+        K_values = np.linspace(self.K - self.K*0.20, self.K + self.K*0.20, 100)
+        T_values = np.linspace(1/12, 2.0, num=100)
+        price_matrix = np.zeros((len(T_values), len(K_values)))
+
+        for i, T in enumerate(T_values):
+            for j, K in enumerate(K_values):
+                price_matrix[i, j] = EUop(self.S, K, T, self.r, self.q, self.sigma, self.option_type).black_scholes()
+                
+        return K_values, T_values, price_matrix
+    
+    def delta_surface(self):
+        
+        K_values = np.linspace(self.K - self.K*0.20, self.K + self.K*0.20, 100)
+        T_values = np.linspace(1/12, 2.0, num=100)
+        delta_matrix = np.zeros((len(T_values), len(K_values)))
+
+        for i, T in enumerate(T_values):
+            for j, K in enumerate(K_values):
+                delta_matrix[i, j] = EUop(self.S, K, T, self.r, self.q, self.sigma, self.option_type).delta()
+                
+        return K_values, T_values, delta_matrix
+    
+    def gamma_surface(self):
+        
+        K_values = np.linspace(self.K - self.K*0.20, self.K + self.K*0.20, 100)
+        T_values = np.linspace(1/12, 2.0, num=100)
+        gamma_matrix = np.zeros((len(T_values), len(K_values)))
+
+        for i, T in enumerate(T_values):
+            for j, K in enumerate(K_values):
+                gamma_matrix[i, j] = EUop(self.S, K, T, self.r, self.q, self.sigma, self.option_type).gamma()
+                
+        return K_values, T_values, gamma_matrix
+    
+    def vega_surface(self):
+        
+        K_values = np.linspace(self.K - self.K*0.20, self.K + self.K*0.20, 100)
+        T_values = np.linspace(1/12, 2.0, num=100)
+        vega_matrix = np.zeros((len(T_values), len(K_values)))
+
+        for i, T in enumerate(T_values):
+            for j, K in enumerate(K_values):
+                vega_matrix[i, j] = EUop(self.S, K, T, self.r, self.q, self.sigma, self.option_type).vega()
+                
+        return K_values, T_values, vega_matrix
+    
+    def theta_surface(self):
+        
+        K_values = np.linspace(self.K - self.K*0.20, self.K + self.K*0.20, 100)
+        T_values = np.linspace(1/12, 2.0, num=100)
+        theta_matrix = np.zeros((len(T_values), len(K_values)))
+
+        for i, T in enumerate(T_values):
+            for j, K in enumerate(K_values):
+                theta_matrix[i, j] = EUop(self.S, K, T, self.r, self.q, self.sigma, self.option_type).theta()
+                
+        return K_values, T_values, theta_matrix
