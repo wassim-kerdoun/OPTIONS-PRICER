@@ -275,6 +275,68 @@ def main():
                             
                             
                     st.markdown('---')
+                    call_option_price_plot = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r, 
+                                                opc_call.q, opc_call.sigma, 
+                                                opc_call.option_type).option_price_plot()
+                    put_option_price_plot = ImpliedVolatility(opc_put.S, opc_put.K, opc_put.T, opc_put.r, 
+                                                opc_put.q, opc_put.sigma, 
+                                                opc_put.option_type).option_price_plot()
+                    
+                    st.header("Option Price Plots")
+                    
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.subheader("Call Option Price")
+                        st.plotly_chart(call_option_price_plot)
+                    
+                    with col2:
+                        st.subheader("Put Option Price")
+                        st.plotly_chart(put_option_price_plot)
+                    
+                    st.markdown('---')
+                    
+                    st.header("Option Price Surface")
+                    k_values, t_values, price_matrix = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r,
+                                                opc_call.q, opc_call.sigma, 
+                                                opc_call.option_type).price_surface()
+                    
+                    call_option_price_surface = go.Figure(data=[go.Surface(x=k_values, y=t_values, z=price_matrix,
+                                                    colorscale='Viridis', showscale=True)])
+
+                    call_option_price_surface.update_layout(
+                        scene=dict(
+                            xaxis_title='Strike Price',
+                            yaxis_title='Time to Expiration (Years)',
+                            zaxis_title='Price'
+                        )
+                    )
+                    
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.subheader("Call Option Price Surface")
+                        st.plotly_chart(call_option_price_surface)
+                        
+                    k_values, t_values, price_matrix = ImpliedVolatility(opc_put.S, opc_put.K, opc_put.T, opc_put.r,
+                                                opc_put.q, opc_put.sigma, 
+                                                opc_put.option_type).price_surface()
+                    
+                    put_option_price_surface = go.Figure(data=[go.Surface(x=k_values, y=t_values, z=price_matrix,
+                                                    colorscale='Viridis', showscale=True)])
+                    
+                    put_option_price_surface.update_layout(
+                        scene=dict(
+                            xaxis_title='Strike Price',
+                            yaxis_title='Time to Expiration (Years)',
+                            zaxis_title='Price'
+                        )
+                    )
+                    with col2:
+                        st.subheader("Put Option Price Surface")
+                        st.plotly_chart(put_option_price_surface)
+                    
+                    st.markdown('---')
                     
                     st.subheader("Volatility Smile")
                     
@@ -335,25 +397,6 @@ def main():
                     
                     st.markdown('---')
                     
-                    k_values, t_values, price_matrix = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r,
-                                                opc_call.q, opc_call.sigma, 
-                                                opc_call.option_type).price_surface()
-                    
-                    fig4 = go.Figure(data=[go.Surface(x=k_values / current_price, y=t_values, z=price_matrix,
-                                                    colorscale='Viridis', showscale=True)])
-
-                    fig4.update_layout(
-                        scene=dict(
-                            xaxis_title='Moneyness (K/S)',
-                            yaxis_title='Time to Expiration (Years)',
-                            zaxis_title='Price'
-                        )
-                    )
-
-                    with col2:
-                        st.subheader('Price Surface')
-                        st.plotly_chart(fig4)
-                    
                     ks, ts, delta_matrix = ImpliedVolatility(opc_call.S, opc_call.K, opc_call.T, opc_call.r,
                                                 opc_call.q, opc_call.sigma, 
                                                 opc_call.option_type).delta_surface()
@@ -369,7 +412,7 @@ def main():
                         )
                     )
 
-                    with col1:
+                    with col2:
                         st.subheader('Delta Surface')
                         st.plotly_chart(fig5)
                         
@@ -388,7 +431,7 @@ def main():
                         )
                     )
 
-                    with col2:
+                    with col1:
                         st.subheader('Gamma Surface')
                         st.plotly_chart(fig6)
                         
@@ -407,7 +450,7 @@ def main():
                         )
                     )
 
-                    with col1:
+                    with col2:
                         st.subheader('Vega Surface')
                         st.plotly_chart(fig7)
                         
@@ -426,7 +469,7 @@ def main():
                         )
                     )
 
-                    with col2:
+                    with col1:
                         st.subheader('Theta Surface')
                         st.plotly_chart(fig8)
     
