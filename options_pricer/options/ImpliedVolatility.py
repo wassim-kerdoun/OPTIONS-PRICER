@@ -2,6 +2,7 @@ import numpy as np
 from scipy.optimize import least_squares
 from options.EUop import EUop
 from enum import Enum
+import plotly.graph_objects as go
 
 class OptionType(Enum):
     CALL = "call"
@@ -179,6 +180,36 @@ class ImpliedVolatility:
         # fig.show()
         
         return K_values, T_values, implied_vol_matrix
+    
+    def option_price_plot(self):
+        
+        S_range = np.linspace(0, self.S * 2, 500)
+        option_price = np.zeros_like(S_range)
+        
+        for s in range(len(S_range)):
+            option_price[s] = EUop(S_range[s], self.K, self.T, self.r, self.q, self.sigma, self.option_type).black_scholes()
+        
+        figure = go.Figure()
+        figure.add_scatter(
+            x=S_range,
+            y=option_price,
+            mode='lines',
+            name=f'{self.option_type.capitalize()} Option Price'
+        )
+        figure.add_scatter(
+            x=[self.K, self.K],
+            y=[0, option_price.max()],
+            mode='lines',
+            line=dict(color='black', dash='dash'),
+            name='Strike Price',
+        )
+        figure.update_layout(
+            xaxis_title='Strike Price',
+            yaxis_title='Option Price',
+            template='plotly_white'
+        )
+
+        return figure
     
     def price_surface(self):
         
